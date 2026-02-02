@@ -1,67 +1,73 @@
-# 🚀 AI WebChat – Simple PHP + JS Chatbot Using OpenRouter API
+<div align="center">
 
-AI WebChat adalah aplikasi **chatbot berbasis web** yang menggunakan **OpenRouter API** dengan model AI seperti **DeepSeek**, **GPT**, dan lainnya. Dibuat menggunakan **HTML**, **CSS**, **JavaScript** untuk frontend, dan **PHP** untuk backend. Proyek ini ringan, responsif, dan mudah dipelajari.
+# 🚀 AI WebChat – Simple PHP + JS Chatbot (OpenRouter API)
 
-Komunikasi dengan API dilakukan melalui server untuk menjaga **API Key** tetap aman dan tidak terbuka di browser.
+[![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-777bb4?style=for-the-badge&logo=php)](https://www.php.net/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![AI Powered](https://img.shields.io/badge/AI-OpenRouter-orange?style=for-the-badge)](https://openrouter.ai/)
 
----
+**AI WebChat** is a web-based chatbot application that leverages the **OpenRouter API** to access various AI models like **DeepSeek, GPT, and Llama**. Built with a focus on simplicity, security, and responsiveness.
 
-## ✨ Fitur Utama
-
-- 💬 **Chat interaktif** dengan AI secara realtime
-- 🧠 Menggunakan model **AI** dari **OpenRouter** (bisa DeepSeek, GPT, Llama, dll)
-- 🔐 **API Key** aman di server (config) untuk mencegah kebocoran
-- 📱 **UI modern & responsif**, kompatibel di desktop dan perangkat mobile
-- ⚡ **Proses cepat** & **ringan**, cocok untuk chatbot atau personal assistant
-- 🌙 **Dark Mode** untuk tampilan yang nyaman di malam hari
-- 🔄 **Mudah dikembangkan** menjadi customer service, personal assistant, dll.
+</div>
 
 ---
 
-## 🔧 Cara Instalasi
+## Key Features
 
-### 1️⃣ Clone Repository  
-   ```bash
-   git clone https://github.com/pangeran-droid/AI-WebChat.git
-   cd AI-WebChat
+- **Real-time Interactive Chat** – Seamless communication with AI.
+- **Multi-Model Support** – Access any model available via OpenRouter (DeepSeek, GPT, Llama, etc.).
+- **Secure API Handling** – API Keys are stored server-side to prevent exposure in the browser.
+- **Modern & Responsive UI** – Fully optimized for both desktop and mobile devices.
+- **Lightweight & Fast** – Minimalist codebase, perfect for personal assistants or integration.
+- **Dark Mode Support** – Comfortable viewing experience in low-light environments.
+- **Extensible** – Easy to customize for customer service, virtual assistants, or educational tools.
+
+---
+
+## Installation Guide
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/pangeran-droid/AI-WebChat.git
+cd AI-WebChat
    ```
 
-### 2️⃣ Masukkan API Key
+### 2. Configure Your API Key
 
-Di dalam file config.php, simpan API key dengan cara berikut:
-```bash
-<?php return ['OPENROUTER_KEY' => 'YOUR_API_KEY'];
+Open `config.php` and insert your OpenRouter API key:
+```php
+<?php 
+return [
+    'OPENROUTER_KEY' => 'YOUR_API_KEY_HERE'
+];
 ```
-Gantilah 'YOUR_API_KEY' dengan API key yang kamu dapatkan dari penyedia layanan OpenRouter ([get one here](https://openrouter.ai/)).
+Get your API key from ([get one here](https://openrouter.ai/)).
 
-### 3️⃣ Jalankan Server (XAMPP / Laragon / Hosting / Lainnya)
+### 3. Run on Local Server (XAMPP / Laragon / Hosting)
 
-Letakkan seluruh project di folder:
+Move the project folder to your server directory:
+- XAMPP → `htdocs/AI-WebChat`
+- Laragon → `www/AI-WebChat`
 
-- XAMPP → htdocs/AI-WebChat
-- Laragon → www/AI-WebChat
-
-Lalu akses di browser:
+Access it in your browser via:
 ```bash
 http://localhost/AI-WebChat
 ```
 
-### 🛠️ Teknologi yang Digunakan
+### Tech Stack
 
 - HTML5 + CSS3 – Frontend UI
 - Vanilla JavaScript – Chat logic
 - PHP – Server-side request handler
 - OpenRouter API – AI model provider
 
-### 📌 Roadmap Pengembangan
+### Roadmap
+- [ ] 💾 Chat History – Save conversations using LocalStorage or Database.
+- [ ] 👤 Avatars – Custom profile pictures for AI and users.
+- [ ] ⚡ Streaming Responses – Real-time text generation (typing effect).
+- [ ] 🎤 Multimodal – Support for image uploads and voice input.
+- [ ] 🤖 Direct Integration – Native support for OpenAI, Anthropic, and Gemini.
 
-- 💾 Menyimpan riwayat chat pengguna
-- 👤 Menambahkan avatar untuk AI dan pengguna
-- ⚡ Menggunakan streaming response untuk chat lebih cepat
-- 🎤 Multimodal: Upload gambar, suara, dll.
-- 🤖 Integrasi dengan model AI lainnya seperti OpenAI GPT, Bing AI, dll.
+### Licensi
+**MIT License.**
 
-### 📄 Lisensi
-
-Proyek ini menggunakan lisensi MIT License.
-Bebas digunakan untuk proyek personal maupun komersial.
