@@ -17,7 +17,6 @@
       --border: rgba(0,0,0,0.1);
     }
 
-    /* DARK MODE VARIABLES */
     body.dark {
       --bg: #0e0f11;
       --container-bg: rgba(25,25,26,0.75);
@@ -39,7 +38,6 @@
       transition: background 0.35s ease, color 0.35s ease;
     }
 
-    /* CONTAINER */
     .chat-container {
       width: 100%;
       max-width: 500px;
@@ -56,7 +54,6 @@
       position: relative;
     }
 
-    /* THEME BUTTON */
     .theme-toggle {
       position: absolute;
       top: 16px;
@@ -80,12 +77,10 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    /* ICON HANDLING */
     .sun-icon { display: none; }
     body.dark .sun-icon { display: block; }
     body.dark .moon-icon { display: none; }
 
-    /* TITLE */
     .title {
       text-align: center;
       font-size: 26px;
@@ -96,7 +91,6 @@
       color: var(--text);
     }
 
-    /* CHAT BOX */
     .chat-box {
       flex: 1;
       overflow-y: auto;
@@ -115,7 +109,6 @@
       background: rgba(255,255,255,0.04);
     }
 
-    /* CHAT BUBBLE */
     .msg {
       padding: 14px 18px;
       max-width: 78%;
@@ -150,7 +143,6 @@
       border-bottom-right-radius: 6px;
     }
 
-    /* INPUT */
     .input-container {
       display: flex;
       gap: 10px;
@@ -192,7 +184,6 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.15);
     }
 
-    /* MOBILE */
     @media (max-width: 500px) {
       body { padding: 0; }
       .chat-container { height: 100vh; border-radius: 0; }
@@ -236,7 +227,6 @@
     const input = document.getElementById("input");
     const chatbox = document.getElementById("chatbox");
 
-    // User membuat pesan
     function addMessage(sender, text) {
       const div = document.createElement("div");
       div.className = sender === "user" ? "msg user-msg" : "msg ai-msg";
@@ -249,14 +239,11 @@
       const text = userText ?? input.value.trim();
       if (!text) return;
 
-      // Tampilkan pesan user
       if (!userText) addMessage("user", text);
       input.value = "";
 
-      // Tampilkan loading sementara
       addMessage("ai", "⏳ Sedang memproses...");
 
-      // Kirim pesan ke server.php
       try {
         const response = await fetch("server.php", {
           method: "POST",
@@ -269,7 +256,6 @@
         const lastAiMsg = document.querySelector(".ai-msg:last-child");
         if (lastAiMsg) lastAiMsg.remove();
 
-        // Tampilkan jawaban AI
         if (data.response?.choices?.[0]?.message?.content) {
           addMessage("ai", data.response.choices[0].message.content);
         } else {
@@ -291,12 +277,10 @@
       }
     });
 
-    // Sapaan awal sederhana
     window.onload = () => {
       addMessage("ai", "Halo! Saya Webby 😄. Ketik sesuatu untuk memulai obrolan.");
     };
 
-    /* DARK MODE TOGGLE */
     const themeBtn = document.getElementById("themeToggle");
 
     themeBtn.onclick = () => {
