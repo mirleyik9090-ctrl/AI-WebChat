@@ -1,0 +1,5 @@
+[phases.setup]
+    nixPkgs = ["php82", "php82Extensions.curl", "php82Extensions.json", "php82Extensions.mbstring"]
+
+[variables]
+    PHP_EXTENSION_CURL = "1"
