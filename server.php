@@ -1,78 +1,69 @@
 <?php
-
 header('Content-Type: application/json');
 
+// 1. Pega a mensagem do usuário
 $input = json_decode(file_get_contents("php://input"), true);
-$userMessage = $input["message"] ?? "";
+$userMessage = $input['message'] ?? "";
 
 if (!$userMessage) {
-    echo json_encode(["error" => "Pesan tidak boleh kosong"]);
+    echo json_encode(["error" => "Mensagem vazia"]);
     exit;
 }
 
-$configFile = __DIR__ . '/config/config.php';
-
-if (!file_exists($configFile)) {
-    echo json_encode(["error" => "config.php tidak ditemukan"]);
-    exit;
-}
-
-$config = include $configFile;
-$apiKey = $config['OPENROUTER_KEY'] ?? null;
+// 2. BUSCA A CHAVE DA API (Corrigido para ler do Railway ou do arquivo)
+$apiKey = getenv('OPENROUTER_KEY');
 
 if (!$apiKey) {
-    echo json_encode(["error" => "API key tidak ditemukan di config"]);
+    // Se não estiver no Railway, tenta ler do arquivo config.php
+    $configFile = __DIR__ . '/config/config.php';
+    if (file_exists($configFile)) {
+        $config = include $configFile;
+        $apiKey = $config['OPENROUTER_KEY'] ?? null;
+    }
+}
+
+if (!$apiKey) {
+    echo json_encode(["error" => "API Key não encontrada. Configure OPENROUTER_KEY no Railway."]);
     exit;
 }
 
+// 3. Pega o prompt do sistema
 $systemPromptFile = __DIR__ . "/system_prompt.txt";
+$systemPrompt = file_exists($systemPromptFile) ? file_get_contents($systemPromptFile) : "Você é um assistente útil.";
 
-if (!file_exists($systemPromptFile)) {
-    echo json_encode(["error" => "File system_prompt.txt tidak ditemukan"]);
-    exit;
-}
-
-$systemPrompt = file_get_contents($systemPromptFile);
-
+// 4. Configura a chamada para a OpenRouter
 $ch = curl_init("https://openrouter.ai/api/v1/chat/completions");
+
+$payload = [
+    // Mudei para um modelo gratuito para garantir que funcione sem saldo
+    "model" => "google/gemini-pro-1.5-exp-free-v2:free", 
+    "messages" => [
+        ["role" => "system", "content" => $systemPrompt],
+        ["role" => "user", "content" => $userMessage]
+    ]
+];
 
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST => true,
     CURLOPT_HTTPHEADER => [
         "Content-Type: application/json",
-        "Authorization: Bearer $apiKey",
-        "User-Agent: AI-ChatBot/1.0"
+        "Authorization: Bearer " . $apiKey,
+        "HTTP-Referer: http://localhost", // Obrigatório pela OpenRouter
     ],
-
-    CURLOPT_POSTFIELDS => json_encode([
-        "model" => "deepseek/deepseek-chat",   // model bisa diganti sesuai kebutuhan
-        // "max_tokens" => 1000,
-        "messages" => [
-            ["role" => "system", "content" => $systemPrompt],
-            ["role" => "user", "content" => $userMessage]
-        ]
-    ])
+    CURLOPT_POSTFIELDS => json_encode($payload)
 ]);
 
 $response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 if (curl_errno($ch)) {
     echo json_encode(["error" => curl_error($ch)]);
     exit;
 }
 
-$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-$decoded = json_decode($response, true);
-
-if (!$decoded) {
-    $decoded = ["raw_response" => $response];
-}
-
-echo json_encode([
-    "status" => $httpcode,
-    "response" => $decoded
-]);
+// 5. Retorna a resposta para o Chat
+echo $response;
 ?>
