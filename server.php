@@ -1,7 +1,11 @@
 <?php
+// Forçar a exibição de erros para descobrirmos o que está travando se não funcionar
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
 
-// 1. Pega a mensagem do usuário
 $input = json_decode(file_get_contents("php://input"), true);
 $userMessage = $input['message'] ?? "";
 
@@ -10,33 +14,25 @@ if (!$userMessage) {
     exit;
 }
 
-// 2. BUSCA A CHAVE DA API (Corrigido para ler do Railway ou do arquivo)
+// Busca a chave no Railway
 $apiKey = getenv('OPENROUTER_KEY');
 
 if (!$apiKey) {
-    // Se não estiver no Railway, tenta ler do arquivo config.php
-    $configFile = __DIR__ . '/config/config.php';
-    if (file_exists($configFile)) {
-        $config = include $configFile;
-        $apiKey = $config['OPENROUTER_KEY'] ?? null;
-    }
-}
-
-if (!$apiKey) {
-    echo json_encode(["error" => "API Key não encontrada. Configure OPENROUTER_KEY no Railway."]);
+    echo json_encode(["error" => "Chave OPENROUTER_KEY não configurada no Railway"]);
     exit;
 }
 
-// 3. Pega o prompt do sistema
-$systemPromptFile = __DIR__ . "/system_prompt.txt";
-$systemPrompt = file_exists($systemPromptFile) ? file_get_contents($systemPromptFile) : "Você é um assistente útil.";
+// Prompt padrão caso o arquivo não seja encontrado
+$systemPrompt = "Você é um assistente prestativo.";
+$promptPath = __DIR__ . "/system_prompt.txt";
+if (file_exists($promptPath)) {
+    $systemPrompt = file_get_contents($promptPath);
+}
 
-// 4. Configura a chamada para a OpenRouter
 $ch = curl_init("https://openrouter.ai/api/v1/chat/completions");
 
 $payload = [
-    // Mudei para um modelo gratuito para garantir que funcione sem saldo
-    "model" => "google/gemini-pro-1.5-exp-free-v2:free", 
+    "model" => "google/gemini-pro-1.5-exp-free-v2:free",
     "messages" => [
         ["role" => "system", "content" => $systemPrompt],
         ["role" => "user", "content" => $userMessage]
@@ -49,7 +45,8 @@ curl_setopt_array($ch, [
     CURLOPT_HTTPHEADER => [
         "Content-Type: application/json",
         "Authorization: Bearer " . $apiKey,
-        "HTTP-Referer: http://localhost", // Obrigatório pela OpenRouter
+        "HTTP-Referer: https://railway.app", // Necessário para OpenRouter
+        "X-Title: MeuChatBot"
     ],
     CURLOPT_POSTFIELDS => json_encode($payload)
 ]);
@@ -61,9 +58,7 @@ if (curl_errno($ch)) {
     echo json_encode(["error" => curl_error($ch)]);
     exit;
 }
-
 curl_close($ch);
 
-// 5. Retorna a resposta para o Chat
+// Retorna exatamente o que a OpenRouter respondeu
 echo $response;
-?>
